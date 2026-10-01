@@ -39,7 +39,7 @@ def calcular_preco_medio(livros):
         #preco_original: str = livro["preco"]
         #preco_original_limpo: str = preco_original.replace("£", "")
         #preco_num: float = float(preco_original_limpo)
-        soma += livro{"preco"}
+        soma += livro["preco"]
 
     preco_medio: float = soma / len(livros)
     return preco_medio
@@ -67,10 +67,10 @@ def encontrar_mais_caro(livros):
     return mais_caro
 
 
-def converter_preco(preco)
+def converter_preco(preco):
     return float(preco.replace ("£", ""))
 
-def converter_nota(nota)
+def converter_nota(nota):
 
     if nota == "Five":
         return 5
@@ -80,22 +80,23 @@ def converter_nota(nota)
         return 3
     elif nota == "Two":
         return 2
-    else
+    else:
         return 1  
 
-def preparar_livros(linhas)
+def preparar_livros(linhas):
     livros = []
+    for linha in linhas:
         livro = {
             "titulo": linha["titulo"],
             "preco": converter_preco(linha["preco"]),
             "categoria": linha["categoria"],
-            "nota": converter_nota[linha["nota"]],
+            "nota": converter_nota(linha["nota"]),
             "url": linha["url"],
-    }
-    livros.append(livro)
-return livros
+        }
+        livros.append(livro)
+    return livros
 
-def carregar_livros
+def carregar_livros():
     return preparar_livros(ler_livros())
 
 if __name__ == "__main__":

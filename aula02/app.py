@@ -7,12 +7,12 @@ import dados
 
 def montar_tabela(livros):
     tabela = []
-    for livro in livros
+    for livro in livros:
         linha = {
-            "Titulo": livro["titulo"]
-            "Categoria": livro["categoria"]
-            "Nota": livro["nota"] * "⭐"
-            "preço": f "£ {livro["preco"]:.2f"
+            "Titulo": livro["titulo"],
+            "Categoria": livro["categoria"],
+            "Nota": livro["nota"] * "⭐",
+            "preço": f"£ {livro["preco"]:.2f}"
         }
         tabela.append(linha)
     return tabela
@@ -20,33 +20,34 @@ def montar_tabela(livros):
 def classificar_preco(preco):
     if preco < 20:
         return "Barato" 
-    elif <= 40:
+    elif preco <= 40:
         return "Médio"
-    else 
+    else: 
         return "Caro"
 
 def contar_por_faixa_dict(livros):
     contagem = {}
     for livros in livros:
         faixa = clasificar_preco(livro["preco"])
-        if aixa in contagem:
+        if faixa in contagem:
             contagem[faixa] = contagem[faixa] + 1
-        else
+        else:
             contagem[faixa] = 1
         
     return contagem
 
-def contar_por_faixa(livros)
-conta_caros = 0
-conta_medio = 0
-conta_baratos = 0
-for livro in livros:
-    if clasificar_preco(livro["preco"]) == "Barato"
-    conta_baratos += 1
-    elif classificar_preco(livro["preco"]) == "Médio"
-    else
-         classificar_preco(livro["preco"]) == "Caro"
-        
+def contar_por_faixa(livros):
+    conta_caros = 0
+    conta_medio = 0
+    conta_baratos = 0
+    for livro in livros:
+        if clasificar_preco(livro["preco"]) == "Barato":
+            conta_baratos += 1
+        elif classificar_preco(livro["preco"]) == "Médio":
+            conta_medio += 1
+        else:
+            classificar_preco(livro["preco"]) == "Caro"
+            
     return conta_baratos, conta_medio, conta_caros
     
 
@@ -71,11 +72,12 @@ def main():
     col4.metric("Livro mais caro", mais_caro["preco"])
     col4.caption(mais_caro["titulo"])
 
+    tabela = montar_tabela(livros)
+
     st.dataframe(tabela)
 
 
 if __name__ == "__main__":
-    main()
+    # main()
 
-livros = dados.carregar_livros()
-# conta_caros, contar_baratos, contar_medio = contar_por_faixa(livros)
+    print(montar_tabela(dados.preparar_livros(dados.ler_livros())))
