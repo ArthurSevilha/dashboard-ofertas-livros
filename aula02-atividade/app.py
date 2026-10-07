@@ -1,9 +1,8 @@
-"""Dashboard de Livros: app Streamlit.
-"""
+"""Dashboard de Livros: app Streamlit."""
 
 import streamlit as st
-
 import dados
+
 
 def montar_tabela(livros):
     """Prepara as linhas que aparecem na tabela, com nomes de coluna amigáveis."""
@@ -13,11 +12,12 @@ def montar_tabela(livros):
             "Título": livro["titulo"],
             "Categoria": livro["categoria"],
             "Nota": livro["nota"] * "⭐",
-            "Preço": f"£ {livro["preco"]:.2f}",
-            "Faixa": classificar_preco(livro["preco"])
+            "Preço": f"£ {livro['preco']:.2f}",
+            "Faixa": classificar_preco(livro["preco"]),
         }
         tabela.append(linha)
     return tabela
+
 
 def classificar_preco(preco):
     """Classifica um preço em libras em uma faixa de texto."""
@@ -27,6 +27,7 @@ def classificar_preco(preco):
         return "Médio"
     else:
         return "Caro"
+
 
 def contar_por_faixa(livros):
     """Conta quantos livros existem em cada faixa de preço: {"Caro": 403, ...}"""
@@ -46,8 +47,8 @@ def main():
     st.title("📚 Dashboard de Livros")
 
     livros = dados.carregar_livros()
-    tabela = montar_tabela(livros)
 
+    # Métricas Globais
     col1, col2, col3, col4 = st.columns(4)
     qtd_livros = len(livros)
     col1.metric("Total de Livros", qtd_livros)
@@ -59,10 +60,25 @@ def main():
     col3.metric("Qtd. livros 5 Estrelas", cinco_estrelas)
 
     mais_caro = dados.encontrar_mais_caro(livros)
-    col4.metric("Livro mais caro", f"£{mais_caro["preco"]}")
-    col4.caption(mais_caro["titulo"])
+    if mais_caro:
+        col4.metric("Livro mais caro", f"£{mais_caro['preco']:.2f}")
+        col4.caption(mais_caro["titulo"])
 
-    st.dataframe(tabela)
+    st.markdown("---")
+
+    # 2. Campo de busca por título
+    termo_busca = st.text_input("Buscar por título:", placeholder="Digite o nome do livro...")
+
+    # 1 e 3. Filtrar livros
+    livros_filtrados = dados.buscar_por_titulo(livros, termo_busca)
+
+    # 3 e 4. Exibição do resultado / aviso
+    if len(livros_filtrados) > 0:
+        st.write(f"**Livros encontrados:** {len(livros_filtrados)}")
+        tabela = montar_tabela(livros_filtrados)
+        st.dataframe(tabela, use_container_width=True)
+    else:
+        st.warning("Nenhum livro encontrado.")
 
 
 if __name__ == "__main__":
