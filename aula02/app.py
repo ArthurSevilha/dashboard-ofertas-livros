@@ -9,10 +9,10 @@ def montar_tabela(livros):
     tabela = []
     for livro in livros:
         linha = {
-            "Titulo": livro["titulo"],
+            "Título": livro["titulo"],
             "Categoria": livro["categoria"],
             "Nota": livro["nota"] * "⭐",
-            "preço": f"£ {livro["preco"]:.2f}"
+            "Preço": f"£{livro['preco']:.2f}",  
         }
         tabela.append(linha)
     return tabela
