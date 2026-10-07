@@ -3,18 +3,13 @@
 import csv
 from pathlib import Path
 
-# Pasta onde este arquivo .py está. Assim o programa encontra o CSV
-# mesmo quando é executado a partir de outra pasta (como no Streamlit Cloud).
+# Pasta onde este arquivo .py está.
 PASTA = Path(__file__).parent
 CAMINHO_LIVROS = PASTA / "livros.csv"
 
 
 def ler_livros():
-    """Lê o CSV de livros e devolve uma lista de dicionários.
-
-    Os valores vêm do jeito que estão no arquivo, ou seja, como texto:
-    {"titulo": "Sharp Objects", "preco": "£47.82", "nota": "Four", ...}
-    """
+    """Lê o CSV de livros e devolve uma lista de dicionários."""
     livros = []
     try:
         with open(CAMINHO_LIVROS, "r", encoding="utf-8") as arquivo:
@@ -31,6 +26,8 @@ def ler_livros():
 
 def calcular_preco_medio(livros):
     """Soma os preços de todos os livros e divide pelo total."""
+    if not livros:
+        return 0.0
     soma: float = 0
     for livro in livros:
         soma += livro["preco"]
@@ -50,16 +47,20 @@ def contar_cinco_estrelas(livros):
 
 
 def encontrar_mais_caro(livros):
-    """Devolve o livro de maior preço. O preço vem como texto ("£51.77")."""
+    """Devolve o livro de maior preço."""
+    if not livros:
+        return None
     mais_caro = livros[0]
     for livro in livros:
         if livro["preco"] > mais_caro["preco"]:
             mais_caro = livro
     return mais_caro
 
+
 def converter_preco(preco):
     """Converte um preço do site em número: "£51.77" -> 51.77"""
     return float(preco.replace("£", ""))
+
 
 def converter_nota(nota):
     """Converte a nota escrita em inglês em número: "Three" -> 3"""
@@ -74,6 +75,7 @@ def converter_nota(nota):
     else:
         return 1
 
+
 def preparar_livros(linhas):
     """Recebe as linhas lidas do CSV e devolve os livros com preço e nota em número."""
     livros = []
@@ -83,18 +85,35 @@ def preparar_livros(linhas):
             "preco": converter_preco(linha["preco"]),
             "categoria": linha["categoria"],
             "nota": converter_nota(linha["nota"]),
-            "url": linha["url"]
+            "url": linha["url"],
         }
         livros.append(livro)
 
     return livros
+
 
 def carregar_livros():
     """Lê o CSV e já devolve os livros prontos para usar."""
     return preparar_livros(ler_livros())
 
 
+def buscar_por_titulo(livros, buscar):
+    """Devolve uma lista nova só com os livros cujo título contém o texto buscado."""
+    if not buscar:
+        return livros
+
+    resultado = []
+    texto_busca = buscar.strip().lower()
+
+    for livro in livros:
+        if texto_busca in livro["titulo"].lower():
+            resultado.append(livro)
+
+    return resultado
+
+
 if __name__ == "__main__":
-    livros = ler_livros()
+    livros = carregar_livros()
     print(f"{len(livros)} livros carregados")
-    print("Primeiro livro:", livros[0])
+    if livros:
+        print("Primeiro livro:", livros[0])
